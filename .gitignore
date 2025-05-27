@@ -1,2 +1,13 @@
 /data
 .env
+/paintings
+/pics
+colors_data.json
+viz_plotly.py
+munch_index.html
+TRY.html
+projection_embeddings.ipynb
+eda_fe copy.ipynb
+dict_for_git.py
+.DS_Store
+.gitignore
