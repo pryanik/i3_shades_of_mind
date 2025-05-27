@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Палитра эмоций Эдварда Мунка | Исследование цвета</title>
+  <meta name="description" content="Анализ и визуализация данных для исследования связи между цветовыми решениями и эмоциональным содержанием картин Мунка." />
+  <meta name="author" content="Лаборатория Искусство и искусственный интеллект" />
+
+  <meta property="og:title" content="Палитра эмоций Эдварда Мунка | Исследование цвета" />
+  <meta property="og:description" content="Анализ и визуализация данных для исследования связи между цветовыми решениями и эмоциональным содержанием картин Мунка." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="images/head.jpg" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="Палитра эмоций Эдварда Мунка | Исследование цвета" />
+  <meta name="twitter:image" content="https://github.com/alinamksva/munch_page/blob/main/images/head.jpg?raw=true" />
+  
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- D3.js for visualizations -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Playfair Display', serif;
+      background-color: rgba(212, 222, 226, 0.2);
+      color:#2D2A25;
+    }
+    
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Custom Munk theme colors */
+    :root {
+      --munk-cream: #c8d3e0;
+      --munk-dark: #2D2A25;
+      --munk-blue: #446A8E;
+      --munk-red: #BE4D3A;
+      --munk-green: #5B7E5B;
+      --munk-yellow: #DBAD64;
+    }
+
+    /* .bg-munk-cream\/20 { background-color: rgba(242, 233, 222, 0.2); }
+    .bg-munk-cream\/30 { background-color: rgba(242, 233, 222, 0.3); } */
+    .bg-munk-cream\/20 { background-color: rgba(212, 222, 226, 0.2); }
+    /* .bg-munk-cream\/20 { background-color: rgba(212, 222, 226, 0.2); } */
+    .bg-munk-cream { background-color: var(--munk-cream); }
+    .text-munk-dark { color: var(--munk-dark); }
+    .bg-munk-blue { background-color: var(--munk-blue); }
+    .bg-munk-red { background-color: var(--munk-red); }
+    .bg-munk-green { background-color: var(--munk-green); }
+    .bg-munk-yellow { background-color: var(--munk-yellow); }
+
+    .tooltip-parent:hover .tooltip {
+      visibility: visible;
+    }
+    
+    .text-muted-foreground {
+      color: #666;
+    }
+  </style>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Playfair Display', 'serif'],
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body>
+<div id="app" class="min-h-screen bg-munk-cream/20">
+    <!-- Header -->
+    <header class="py-8 md:py-12 px-4 text-center text-white"
+            style="background-image: url('images/head.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        <h1 class="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
+            Палитра эмоций Эдварда Мунка
+        </h1>
+        <p class="text-xl md:text-2xl max-w-3xl mx-auto font-serif italic drop-shadow">
+            Исследование взаимосвязи между цветом и эмоциональным состоянием в работах Эдварда Мунка
+        </p>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Introduction Section -->
+      <section class="max-w-4xl mx-auto px-4 py-8 md:py-12">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h2 class="text-3xl font-bold mb-4 text-munk-dark">Об исследовании</h2>
+            <p class="text-lg mb-4">
+              Исследование посвящено поиску взаимосвязи между эмоциональным состоянием Эдварда Мунка и цветами, которые он использовал в своих работах на разных этапах жизни.
+            </p>
+            <p class="text-lg mb-4">
+              Анализируя доминирующие цвета на его картинах и сопоставляя их с биографическими сведениями о его эмоциональном состоянии, можно проследить закономерности, свидетельствующие о том, насколько сильно его внутренний мир отражался на его картинах.
+            </p>
+            <p class="text-lg">
+              Если навести курсор на временную шкалу ниже, можно изучить отдельные годы творчества Мунка и созданные им в эти годы картины и увидеть, как использование цвета менялось вместе с эмоциональным состоянием художника.
+            </p>
+          </div>
+          <div class="bg-munk-cream p-6 rounded-lg shadow-lg">
+            <h3 class="text-2xl font-serif mb-4 text-munk-dark">Ключевые наблюдения</h3>
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <div class="w-4 aspect-square shrink-0 mt-1.5 rounded-full bg-munk-blue mr-3"></div>
+                <span>Синий — цвет меланхолии, тяжелых раздумий, печали и горя.</span>
+              </li>
+              <li class="flex items-start">
+                <div class="w-4 aspect-square shrink-0 mt-1.5 rounded-full bg-munk-red mr-3"></div>
+                <span>Красный — цвет ярких эмоций, причем чаще отрицательных, чем положительных.</span>
+              </li>
+              <li class="flex items-start">
+                <div class="w-4 aspect-square shrink-0 mt-1.5 rounded-full bg-munk-green mr-3"></div>
+                <span>Зеленый и сине-зеленый — цвета природы или тяжелых размышлений.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- Добавленный текст под grid -->
+        <p class="text-lg mt-8 text-center text-munk-dark">
+            Исследуйте, как менялась цветовая палитра Мунка с течением времени. При наведении курсора на нужный год на гистограмме, ниже появятся картины этого периода.
+        </p>
+</section>
+      </section>
+
+      <!-- Color Analysis Timeline Section -->
+      <section>
+        <div class="max-w-6xl mx-auto px-4">
+          <h2 class="text-3xl font-bold mb-6 text-center">Хронология цвета</h2>
+          
+          <div class="relative w-full max-w-4xl mx-auto mb-8">
+            <div id="histogram-chart" class="w-full bg-munk-cream rounded-lg shadow-md p-4"></div>
+            
+            <div id="selected-year-info" class="mt-8 hidden">
+              <!-- Selected year content will be inserted here by JavaScript -->
+            </div>
+            
+            <div id="default-message" class="text-center mt-8 text-lg text-muted-foreground">
+              Наведите курсор на год в гистограмме, чтобы увидеть здесь картины, созданные в этом году.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Year Comparison Section -->
+      <section class="py-8 md:py-12 bg-munk-cream/30">
+        <div class="max-w-6xl mx-auto px-4">
+          <div class="relative w-full max-w-4xl mx-auto mb-8">
+            <div class="flex flex-col gap-6">
+              <h2 class="text-3xl font-bold mb-6 text-center">Визуальное сравнение</h2>
+              
+              <p class="text-center text-lg mb-8 max-w-2xl mx-auto">
+                Сравните цветовые палитры и эмоциональные состояния разных лет в творчестве Мунка.
+              </p>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="flex flex-col items-center">
+                  <div class="mb-4 w-full max-w-xs">
+                    <select id="first-year-select" class="w-full p-2 border rounded">
+                      <!-- Year options will be added by JavaScript -->
+                    </select>
+                  </div>
+                  <div id="first-year-palette" class="w-full p-6 border rounded-lg bg-munk-cream shadow-sm">
+                    <!-- First year palette content will be inserted by JavaScript -->
+                  </div>
+                </div>
+                
+                <div class="flex flex-col items-center">
+                  <div class="mb-4 w-full max-w-xs">
+                    <select id="second-year-select" class="w-full p-2 border rounded">
+                      <!-- Year options will be added by JavaScript -->
+                    </select>
+                  </div>
+                  <div id="second-year-palette" class="w-full p-6 border rounded-lg bg-munk-cream shadow-sm">
+                    <!-- Second year palette content will be inserted by JavaScript -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-8 px-4 mt-12 border-t border-gray-200"
+            style="background-image: url('images/head.jpg'); background-size: cover; background-position: center;">
+      <div class="max-w-4xl mx-auto text-center">
+        <p class="mb-2 text-white font-bold">
+          Исследование и визуализация: Палитра эмоций Эдварда Мунка
+        </p>
+        <p class="mb-2 text-white font-serif italic">
+          Лаборатория "Искусство и искусственный интеллект"
+        </p>
+      </div>
+    </footer>
+  </div>
+  <script src="munch_script.js"></script>
+</body>
+</html>
