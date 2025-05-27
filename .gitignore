@@ -1,2 +1,8 @@
 .DS_store
 .env
+dict_for_git.py
+eda_fe copy.ipynb
+resize.py
+/data
+viz_plotly.py
+projection_embeddings.ipynb
